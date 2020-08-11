@@ -1,10 +1,3 @@
-/*
-SQLyog Ultimate v12.2.6 (64 bit)
-MySQL - 5.7.19-0ubuntu0.16.04.1 : Database - account
-*********************************************************************
-*/
-CREATE DATABASE `tcc` ;
-
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`tcc_account` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin */;
 
 USE `tcc_account`;
@@ -27,7 +20,7 @@ CREATE TABLE `account` (
 
 insert  into `account`(`id`,`user_id`,`balance`,`freeze_amount`,`create_time`,`update_time`) values
 
-(1,'10000',10000,0,'2017-09-18 14:54:22',NULL);
+(1,'1000000',10000,0,'2017-09-18 14:54:22',NULL);
 
 
 
@@ -51,7 +44,7 @@ CREATE TABLE `inventory` (
 
 insert  into `inventory`(`id`,`product_id`,`total_inventory`,`lock_inventory`) values
 
-(1,'1',1000,0);
+(1,'1',10000000,0);
 
 
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`tcc_order` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;

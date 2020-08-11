@@ -30,19 +30,19 @@ import org.slf4j.LoggerFactory;
  */
 public class HmilyLogo {
 
-    private static final String HMILY_LOGO = "\n" +
-            "    __  __          _ __     \n" +
-            "   / / / /___ ___  (_) /_  __\n" +
-            "  / /_/ / __ `__ \\/ / / / / /\n" +
-            " / __  / / / / / / / / /_/ / \n" +
-            "/_/ /_/_/ /_/ /_/_/_/\\__, /  \n" +
-            "                    /____/   \n";
-
-    /**
-     * logger.
-     */
+    private static final String HMILY_LOGO = "\n"
+            + "    __  __          _ __     \n"
+            + "   / / / /___ ___  (_) /_  __\n"
+            + "  / /_/ / __ `__ \\/ / / / / /\n"
+            + " / __  / / / / / / / / /_/ / \n"
+            + "/_/ /_/_/ /_/ /_/_/_/\\__, /  \n"
+            + "                    /____/   \n";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(HmilyLogo.class);
-
+    
+    /**
+     * Logo.
+     */
     public void logo() {
         String bannerText = buildBannerText();
         if (LOGGER.isInfoEnabled()) {
@@ -57,7 +57,7 @@ public class HmilyLogo {
                 + CommonConstant.LINE_SEPARATOR
                 + HMILY_LOGO
                 + CommonConstant.LINE_SEPARATOR
-                + " :: Hmily :: (v" + VersionUtils.getVersion(getClass(), "2.0.0") + ")"
+                + " :: Hmily :: (v" + VersionUtils.getVersion(getClass(), "2.0.2") + ")"
                 + CommonConstant.LINE_SEPARATOR;
     }
 

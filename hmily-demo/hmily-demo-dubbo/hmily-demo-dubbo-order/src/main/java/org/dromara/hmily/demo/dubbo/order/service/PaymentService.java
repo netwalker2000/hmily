@@ -32,6 +32,9 @@ public interface PaymentService {
      * @param order 订单实体
      */
     void makePayment(Order order);
+    
+    
+    void makePaymentForTAC(Order order);
 
     /**
      * Test make payment.
@@ -47,6 +50,8 @@ public interface PaymentService {
      * @param order 订单实体
      */
     void makePaymentWithNested(Order order);
+    
+    void makePaymentWithNestedException(Order order);
 
     /**
      * mock订单支付的时候库存异常

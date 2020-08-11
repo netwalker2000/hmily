@@ -6,18 +6,22 @@
     <groupId>org.dromara</groupId>
     <artifactId>hmily</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.2-RELEASE</version>
+    <version>2.1.0-SNAPSHOT</version>
     <name>hmily</name>
     <modules>
         <module>hmily-common</module>
         <module>hmily-core</module>
-        <module>hmily-dubbo</module>
-        <module>hmily-apache-dubbo</module>
-        <module>hmily-springcloud</module>
         <module>hmily-annotation</module>
-        <module>hmily-admin</module>
-        <module>hmily-motan</module>
         <module>hmily-spring-boot-starter</module>
+        <module>hmily-spi</module>
+        <module>hmily-serializer</module>
+        <module>hmily-repository</module>
+        <module>hmily-config</module>
+        <module>hmily-spring</module>
+        <module>hmily-rpc</module>
+        <module>hmily-tcc</module>
+        <module>hmily-tac</module>
+        <module>hmily-metrics</module>
     </modules>
 
     <organization>
@@ -33,9 +37,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/yu199195/hmily.git</url>
-        <connection>scm:git:https://github.com/yu199195/hmily</connection>
-        <developerConnection>scm:git:git@github.com:yu199195/hmily</developerConnection>
+        <url>https://github.com/dromara/hmily.git</url>
+        <connection>scm:git:https://github.com/dromara/hmily</connection>
+        <developerConnection>scm:git:git@github.com:dromara/hmily</developerConnection>
         <tag>${project.version}</tag>
     </scm>
 
@@ -47,7 +51,7 @@
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/yu199195/hmily/issues</url>
+        <url>https://github.com/dromara/hmily/issues</url>
     </issueManagement>
 
     <developers>
@@ -55,9 +59,9 @@
             <id>xiaoyu</id>
             <name>xiaoyu(Myth)</name>
             <email>549477611@qq.com</email>
-            <organization>free</organization>
+            <organization>dromara.org</organization>
             <roles>
-                <role>Developer</role>
+                <role>author</role>
             </roles>
         </developer>
     </developers>
@@ -78,15 +82,13 @@
         <protostuff.version>1.0.8</protostuff.version>
         <kryo.version>4.0.0</kryo.version>
         <curator.version>4.0.1</curator.version>
-        <nettty.version>4.1.12.Final</nettty.version>
-        <commons.httpclient.version>3.0.1</commons.httpclient.version>
-        <httpclient.version>4.5.1</httpclient.version>
-        <okhttp.version>3.7.0</okhttp.version>
-        <gson.verions>2.6.2</gson.verions>
+        <nettty.version>4.1.42.Final</nettty.version>
+        <gson.verions>2.8.0</gson.verions>
         <lombok.version>1.16.14</lombok.version>
         <motan.version>1.0.0</motan.version>
         <disruptor.version>3.4.0</disruptor.version>
         <hikaricp.version>3.2.0</hikaricp.version>
+        <prometheus-java-client.version>0.6.0</prometheus-java-client.version>
     </properties>
 
     <dependencyManagement>
@@ -113,6 +115,12 @@
             <dependency>
                 <groupId>org.dromara</groupId>
                 <artifactId>hmily-dubbo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>hmily-apache-dubbo</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -148,6 +156,12 @@
 
             <dependency>
                 <groupId>org.dromara</groupId>
+                <artifactId>hmily-spring-boot-starter-apache-dubbo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dromara</groupId>
                 <artifactId>hmily-spring-boot-starter-springcloud</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -177,20 +191,20 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient</artifactId>
+                <version>${prometheus-java-client.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons.httpclient.version}</version>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_httpserver</artifactId>
+                <version>${prometheus-java-client.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
+                <groupId>io.prometheus</groupId>
+                <artifactId>simpleclient_hotspot</artifactId>
+                <version>${prometheus-java-client.version}</version>
             </dependency>
 
             <dependency>
@@ -400,7 +414,7 @@
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
-                <version>1.9.2</version>
+                <version>1.9.4</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -413,12 +427,7 @@
                 <artifactId>hessian</artifactId>
                 <version>${hessian.version}</version>
             </dependency>
-            <!--  <dependency>
-                  <groupId>com.esotericsoftware</groupId>
-                  <artifactId>kryo</artifactId>
-                  <version>${kryo.version}</version>
-              </dependency>
-  -->
+        
             <dependency>
                 <groupId>com.esotericsoftware</groupId>
                 <artifactId>kryo-shaded</artifactId>
@@ -444,7 +453,7 @@
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>3.4.9</version>
+                <version>3.4.14</version>
             </dependency>
 
             <!-- zkclient  -->
@@ -456,46 +465,84 @@
         </dependencies>
     </dependencyManagement>
 
-  <!--
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
 
-   <distributionManagement>
-         <snapshotRepository>
-             <id>ossrh</id>
-             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-         </snapshotRepository>
-         <repository>
-             <id>ossrh</id>
-             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-         </repository>
-     </distributionManagement>
--->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>ch.qos.logback</groupId>-->
+        <!--            <artifactId>logback-classic</artifactId>-->
+        <!--        </dependency>-->
+    </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
-            <!-- <plugin>
-                 <groupId>org.sonatype.plugins</groupId>
-                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                 <version>1.6.3</version>
-                 <extensions>true</extensions>
-                 <configuration>
-                     <serverId>ossrh</serverId>
-                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                 </configuration>
-             </plugin>
-             <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-gpg-plugin</artifactId>
-                 <version>1.5</version>
-                 <executions>
-                     <execution>
-                         <phase>verify</phase>
-                         <goals>
-                             <goal>sign</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>-->
+           <!-- <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -536,6 +583,33 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.5</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <!-- 略过整个单元测试的执行，不推荐 -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <configuration>-->
+<!--                    <configLocation>/script/hmily_checkstyle.xml</configLocation>-->
+<!--                    <includeTestSourceDirectory>false</includeTestSourceDirectory>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>validate</id>-->
+<!--                        <phase>validate</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

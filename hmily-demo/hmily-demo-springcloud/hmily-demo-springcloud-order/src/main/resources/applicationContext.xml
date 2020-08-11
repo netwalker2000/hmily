@@ -32,7 +32,27 @@
 
     <context:component-scan base-package="org.dromara.hmily.*"/>
     <aop:aspectj-autoproxy expose-proxy="true"/>
-    <bean id="hmilyTransactionBootstrap" class="org.dromara.hmily.core.bootstrap.HmilyTransactionBootstrap">
+    <bean id="hmilyApplicationContextAware" class="org.dromara.hmily.spring.HmilyApplicationContextAware">
+         <property name="appName" value="sc-order"/>
+         <property name="serializer" value="kryo"/>
+         <property name="recoverDelayTime" value="120"/>
+         <property name="retryMax" value="30"/>
+         <property name="scheduledRecoveryDelay" value="60"/>
+         <property name="scheduledThreadMax" value="4"/>
+         <property name="repository" value="mysql"/>
+         <property name="hmilyDbConfig">
+             <bean class="org.dromara.hmily.config.HmilyDbConfig">
+                 <property name="url"
+                           value="jdbc:mysql://127.0.0.1:3306/hmily?useUnicode=true&amp;characterEncoding=utf-8"/>
+                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+                 <property name="username" value="root"/>
+                 <property name="password" value=""/>
+             </bean>
+         </property>
+
+    </bean>
+
+    <!--<bean id="hmilyConfig" class="org.dromara.hmily.common.config.HmilyConfig">
         <property name="serializer" value="kryo"/>
         <property name="recoverDelayTime" value="120"/>
         <property name="retryMax" value="30"/>
@@ -44,13 +64,14 @@
         <property name="hmilyDbConfig">
             <bean class="org.dromara.hmily.common.config.HmilyDbConfig">
                 <property name="url"
-                          value="jdbc:mysql://192.168.1.98:3306/tcc?useUnicode=true&amp;characterEncoding=utf8"/>
+                          value="jdbc:mysql://rm-bp10o39k37lfxh090.mysql.rds.aliyuncs.com:3306/soul-open?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=GMT&amp;failOverReadOnly=false&amp;autoReconnect=true"/>
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
                 <property name="username" value="root"/>
-                <property name="password" value="123456"/>
+                <property name="password" value="dev-mysql-R3ND7N4zvjYt0Wvw"/>
             </bean>
         </property>
-    </bean>
+
+    </bean>-->
 
     <!--
        <property name="repositorySupport" value="db" />

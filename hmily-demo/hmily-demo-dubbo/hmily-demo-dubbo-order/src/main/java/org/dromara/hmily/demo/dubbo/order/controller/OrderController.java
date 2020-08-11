@@ -54,6 +54,18 @@ public class OrderController {
         return "";
 
     }
+    
+    @PostMapping(value = "/orderPayTAC")
+    @ApiOperation(value = "测试tac模式")
+    public String orderPayTAC(@RequestParam(value = "count") Integer count,
+                           @RequestParam(value = "amount") BigDecimal amount) {
+        
+        final long start = System.currentTimeMillis();
+        orderService.saveOrderForTAC(count, amount);
+        System.out.println("消耗时间为:" + (System.currentTimeMillis() - start));
+        return "";
+        
+    }
 
     @PostMapping(value = "/testOrderPay")
     @ApiOperation(value = "测试订单支付接口(这里是压测接口不添加分布式事务)")
@@ -89,6 +101,16 @@ public class OrderController {
         return orderService.orderPayWithNested(count, amount);
 
     }
+    
+    @PostMapping(value = "/orderPayWithNestedException")
+    @ApiOperation(value = "订单支付接口（这里模拟且套调用时候的异常")
+    public String orderPayWithNestedException(@RequestParam(value = "count") Integer count,
+                                     @RequestParam(value = "amount") BigDecimal amount) {
+        
+        return orderService.orderPayWithNestedException(count, amount);
+        
+    }
+
 
 
 

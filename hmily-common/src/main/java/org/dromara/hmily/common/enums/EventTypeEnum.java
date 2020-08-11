@@ -14,10 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.dromara.hmily.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.dromara.hmily.common.exception.HmilyRuntimeException;
+
+import java.util.Arrays;
 
 /**
  * The enum Coordinator action enum.
@@ -27,29 +31,49 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum EventTypeEnum {
-
-    /**
-     * Save coordinator action enum.
-     */
-    SAVE(0, "保存"),
-
+    
+    CREATE_HMILY_TRANSACTION(10, "创建全局事务"),
+    
+    UPDATE_HMILY_TRANSACTION_STATUS(11, "更新全局事务状态"),
+    
+    REMOVE_HMILY_TRANSACTION(12, "删除全局日志"),
+    
+    CREATE_HMILY_PARTICIPANT(20, "创建参与者"),
+    
+    UPDATE_HMILY_PARTICIPANT_STATUS(21, "更新参与者状态"),
+    
+    REMOVE_HMILY_PARTICIPANT(22, "删除参与者日志"),
+    
+    REMOVE_HMILY_PARTICIPANT_UNDO(30, "删除undo日志"),
+    
     /**
      * Delete coordinator action enum.
      */
-    DELETE(1, "删除"),
+    DELETE(20, "删除"),
 
     /**
      * Update coordinator action enum.
      */
-    UPDATE_STATUS(2, "更新状态"),
+    UPDATE_STATUS(30, "更新状态"),
 
     /**
      * Rollback coordinator action enum.
      */
-    UPDATE_PARTICIPANT(3, "更新参与者");
+    UPDATE_PARTICIPANT(40, "更新参与者");
 
     private final int code;
 
     private final String desc;
+
+    /**
+     * Build by code event type enum.
+     *
+     * @param code the code
+     * @return the event type enum
+     */
+    public static EventTypeEnum buildByCode(final int code) {
+        return Arrays.stream(EventTypeEnum.values()).filter(e -> e.code == code).findFirst()
+                .orElseThrow(() -> new HmilyRuntimeException("can not support this code!"));
+    }
 
 }

@@ -40,6 +40,4 @@ public class DubboHmilyOrderApplication {
     public static void main(final String[] args) {
         SpringApplication.run(DubboHmilyOrderApplication.class, args);
     }
-
-
 }

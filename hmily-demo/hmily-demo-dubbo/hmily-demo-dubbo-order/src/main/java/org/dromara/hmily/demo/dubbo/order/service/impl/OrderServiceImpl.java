@@ -17,6 +17,7 @@
 
 package org.dromara.hmily.demo.dubbo.order.service.impl;
 
+import org.dromara.hmily.annotation.HmilyTAC;
 import org.dromara.hmily.common.utils.IdWorkerUtils;
 import org.dromara.hmily.demo.dubbo.order.entity.Order;
 import org.dromara.hmily.demo.dubbo.order.enums.OrderStatusEnum;
@@ -65,25 +66,30 @@ public class OrderServiceImpl implements OrderService {
             paymentService.makePayment(order);
             System.out.println("切面耗时：" + (System.currentTimeMillis() - start));
         }
-       /* final long start = System.currentTimeMillis();
-        paymentService.makePayment(new Order());
-        System.out.println("切面耗时：" + (System.currentTimeMillis() - start));*/
         return "success";
     }
-
+    
+    @Override
+    public String saveOrderForTAC(Integer count, BigDecimal amount) {
+        final Order order = buildOrder(count, amount);
+        final int rows = orderMapper.save(order);
+        if (rows > 0) {
+            final long start = System.currentTimeMillis();
+            paymentService.makePaymentForTAC(order);
+            System.out.println("切面耗时：" + (System.currentTimeMillis() - start));
+        }
+        return "success";
+    }
+    
     @Override
     public String testOrderPay(Integer count, BigDecimal amount) {
-       /* final Order order = buildTestOrder(count, amount);
+        final Order order = buildTestOrder(count, amount);
         final int rows = orderMapper.save(order);
         if (rows > 0) {
             final long start = System.currentTimeMillis();
             paymentService.testMakePayment(order);
             System.out.println("方法耗时：" + (System.currentTimeMillis() - start));
-        }*/
-
-        final long start = System.currentTimeMillis();
-        paymentService.testMakePayment(new Order());
-        System.out.println("方法耗时：" + (System.currentTimeMillis() - start));
+        }
         return "success";
     }
 
@@ -104,7 +110,17 @@ public class OrderServiceImpl implements OrderService {
         }
         return "success";
     }
-
+    
+    @Override
+    public String orderPayWithNestedException(Integer count, BigDecimal amount) {
+        final Order order = buildOrder(count, amount);
+        final int rows = orderMapper.save(order);
+        if (rows > 0) {
+            paymentService.makePaymentWithNestedException(order);
+        }
+        return "success";
+    }
+    
     /**
      * 模拟在订单支付操作中，库存在try阶段中的库存异常
      *
@@ -182,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
     private Order buildOrder(Integer count, BigDecimal amount) {
         Order order = new Order();
         order.setCreateTime(new Date());
-        order.setNumber(IdWorkerUtils.getInstance().buildPartNumber());
+        order.setNumber(String.valueOf(IdWorkerUtils.getInstance().createUUID()));
         //demo中的表里只有商品id为1的数据
         order.setProductId("1");
         order.setStatus(OrderStatusEnum.NOT_PAY.getCode());
@@ -196,7 +212,7 @@ public class OrderServiceImpl implements OrderService {
     private Order buildTestOrder(Integer count, BigDecimal amount) {
         Order order = new Order();
         order.setCreateTime(new Date());
-        order.setNumber(IdWorkerUtils.getInstance().buildPartNumber());
+        order.setNumber(String.valueOf(IdWorkerUtils.getInstance().createUUID()));
         //demo中的表里只有商品id为1的数据
         order.setProductId("1");
         order.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());

@@ -1,73 +1,75 @@
 Hmily
 ================
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2f0a0191b02448e6919aca6ce12a1584)](https://app.codacy.com/app/yu199195/hmily?utm_source=github.com&utm_medium=referral&utm_content=yu199195/hmily&utm_campaign=Badge_Grade_Settings)
-[![Total lines](https://tokei.rs/b1/github/yu199195/hmily?category=lines)](https://github.com/yu199195/hmily)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/yu199195/hmily/blob/master/LICENSE)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2f0a0191b02448e6919aca6ce12a1584)](https://app.codacy.com/app/Dromara/hmily?utm_source=github.com&utm_medium=referral&utm_content=Dromara/hmily&utm_campaign=Badge_Grade_Settings)
+[![Total lines](https://tokei.rs/b1/github/Dromara/hmily?category=lines)](https://github.com/yu199195/hmily)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?label=license)](https://github.com/Dromara/hmily/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/org.dromara/hmily.svg?label=maven%20central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.dromara%22%20AND%20hmily)
-[![Javadocs](http://www.javadoc.io/badge/org.dromara/hmily.svg)](http://www.javadoc.io/doc/org.dromara/hmily)
-[![Build Status](https://travis-ci.org/yu199195/hmily.svg?branch=master)](https://travis-ci.org/yu199195/hmily)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://shang.qq.com/wpa/qunwpa?idkey=2e9e353fa10924812bc58c10ab46de0ca6bef80e34168bccde275f7ca0cafd85)
-### 高性能分布式事务tcc方案开源框架。基于java语言来开发（JDK1.8）,支持dubbo，springcloud,motan等rpc框架进行分布式事务。
- 
-# 框架特性
 
-   * ##### 支持嵌套事务(Nested transaction support).
+#### 分布式事务解决方案全景图
+ ![](https://yu199195.github.io/images/hmily/hmily.png) 
 
-   * ##### 采用disruptor框架进行事务日志的异步读写，与RPC框架的性能毫无差别。
+#  功能
+   
+   *  支持 `Dubbo`, `SpringCloud`,`Montan` 等RPC框架进行分布式事务
+   
+   *  支持事务异常回滚，超时异常恢复，防止事务悬挂
+   
+   *  支持且套事务，支持RPC且套调用
+   
+   *  提供零侵入的`spring namespace`, `springboot` 快速集成方式, 简单易用
+   
+   *  事务日志存储支持 `mysql`, `oracle`, `mongodb`, `redis`, `zookeeper` 等方式
+   
+   *  高性能，支持微服务集群部署
+   
+   *  提供后台管理可视化,以及metrics相关性能监控
+   
 
-   * ##### 支持SpringBoot-starter 项目启动，使用简单。
+# 必要前提 
 
-   * ##### RPC框架支持 : dubbo,motan,springcloud。
-
-   * ##### 本地事务存储支持 : redis,mongodb,zookeeper,file,mysql。
-
-   * ##### 事务日志序列化支持 ：java，hessian，kryo，protostuff。
-
-   * ##### 采用Aspect AOP 切面思想与Spring无缝集成，天然支持集群。
-
-   * ##### 内置经典的分布式事务场景demo工程，并有swagger-ui可视化界面可以快速体验。
-
-
-# 官网
-
- ## http://dromara.org  或者 https://dromara.org 有时候https打不开。
- 
-
-# 文档 
- 
- ##  http://dromara.org/website/zh-cn/docs/hmily/index.html
-
-#  为什么高性能？
+  * 必须使用 `JDK8+` 
   
-  * ## https://mp.weixin.qq.com/s/Eh9CKTU0nwLZ1rl3xmaZGA
+  * 必须要使用一款 `RPC` 框架, 比如 : `Dubbo`, `SpringCloud`,`Montan`
   
 
-#  视频详解
+# TCC模式
 
-  * ## 环境搭建以及运行 : http://www.iqiyi.com/w_19rwkrfu69.html#vfrm=16-1-1-1
+ ![](https://yu199195.github.io/images/hmily/hmily-tcc.png) 
  
-  * ## 源码详解以及调试 : http://www.iqiyi.com/w_19rwkreutt.html
+   当使用`TCC`模式的时候,用户根据自身业务需求提供 `try`, `confirm`, `cancel` 等三个方法，
+   并且 `confirm`, `cancel` 方法由自身完成实现，框架只是负责来调用，来达到事务的一致性。
+
+# TAC模式  
+
+   当用户使用`TAC`模式的时候，用户必须使用关系型数据库来进行业务操作，框架会自动生成`回滚SQL`,
+   当业务异常的时候，会执行`回滚SQL`来达到事务的一致性。
+   
+# 文档
+
+   如果你想使用，你可以参考[Quick Start](http://dromara.org/website/zh-cn/docs/hmily/index.html)   
+  
+# 关于Hmily 
+    
+   Hmily是柔性分布式事务解决方案，提供了`TCC` 与 `TAC` 模式。
+   
+   它以零侵入以及快速集成方式能够方便的被业务进行整合。
+   
+   在性能上，日志存储异步（可选）以及使用异步执行的方式，不损耗业务方法方法。
+   
+   之前是由我个人开发，目前在京东数科重启，未来会成为京东数科的分布式事务解决方案。
+
+  
+# 关注趋势
+
+[![Stargazers over time](https://starchart.cc/yu199195/hmily.svg)](https://starchart.cc/yu199195/hmily) 
+ 
+# 用户墙
+ 
+# 支持
+
+  ![](https://yu199195.github.io/images/qq.png)    ![](https://yu199195.github.io/images/public.jpg)
+ 
 
 
-# FAQ
 
-* ### 为什么我下载的代码后，用idea打开没有相应的get set 方法呢？
-   ##### 答：因为框架使用了Lombok包，它是在编译的时期，自动生成get set方法，并不影响运行，如果觉得提示错误难受，请自行下载lombok包插件，[lombok官网](http://projectlombok.org/)
-
-* ### 为什么我运行demo工程，找不到applicationContent.xml呢？
-  ##### 答：请设置项目的资源文件夹。
-
-* ### 为什么我启动hmily-admin项目的时候，会报mongo 集群连接错误呢？
-  ##### 答：这是因为项目里面有mongo代码，spring boot会自动配置，该错误没有关系，只要admin项目能正常启动就行。
-
-
-# Support
-
- * ###  如有任何问题欢迎加入QQ群进行讨论
-   ![](https://yu199195.github.io/images/qq.png)
-
-
- * ###  微信公众号
-   ![](https://yu199195.github.io/images/public.jpg)
-
- # Contribution

@@ -8,9 +8,9 @@ server:
 spring:
     datasource:
         driver-class-name:  com.mysql.jdbc.Driver
-        url: jdbc:mysql://192.168.1.98:3306/tcc_account?useUnicode=true&characterEncoding=utf8
+        url: jdbc:mysql://127.0.0.1:3306/tcc_account?useUnicode=true&characterEncoding=utf8
         username: root
-        password: 123456
+        password:
     application:
       name: account-service
     main:
@@ -19,20 +19,22 @@ spring:
 org:
     dromara:
          hmily :
+            app-name: sc-account
             serializer : kryo
             recoverDelayTime : 128
             retryMax : 30
-            scheduledDelay : 128
+            scheduled-recovery-delay: 60
             scheduledThreadMax :  10
-            repositorySupport : db
-            started: false
+            repository : mysql
             hmilyDbConfig :
                  driverClassName  : com.mysql.jdbc.Driver
-                 url :  jdbc:mysql://192.168.1.98:3306/tcc?useUnicode=true&characterEncoding=utf8
+                 url: jdbc:mysql://127.0.0.1:3306/hmily?useUnicode=true&characterEncoding=utf8
                  username : root
-                 password : 123456
+                 password :
 
-       # repositorySupport : redis
+
+
+      # repositorySupport : redis
        #         hostName  : 192.168.1.68
        #         port      :  6379
        #         password  :
@@ -60,7 +62,7 @@ mybatis:
 eureka:
  client:
      serviceUrl:
-       defaultZone: http://localhost:8768/eureka/
+       defaultZone: http://localhost:8761/eureka/
  instance:
    prefer-ip-address: true
 

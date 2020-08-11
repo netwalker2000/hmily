@@ -18,7 +18,8 @@
 package org.dromara.hmily.demo.dubbo.order.service.impl;
 
 
-import org.dromara.hmily.annotation.Hmily;
+import org.dromara.hmily.annotation.HmilyTAC;
+import org.dromara.hmily.annotation.HmilyTCC;
 import org.dromara.hmily.common.exception.HmilyRuntimeException;
 import org.dromara.hmily.demo.dubbo.account.api.dto.AccountDTO;
 import org.dromara.hmily.demo.dubbo.account.api.dto.AccountNestedDTO;
@@ -39,12 +40,8 @@ import org.springframework.stereotype.Service;
  * @author xiaoyu
  */
 @Service
-@SuppressWarnings("all")
 public class PaymentServiceImpl implements PaymentService {
-
-    /**
-     * logger.
-     */
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     private final OrderMapper orderMapper;
@@ -64,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public void makePayment(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
@@ -89,10 +86,28 @@ public class PaymentServiceImpl implements PaymentService {
         inventoryDTO.setProductId(order.getProductId());
         inventoryService.decrease(inventoryDTO);
     }
-
+    
+    @Override
+    @HmilyTAC
+    public void makePaymentForTAC(Order order) {
+        order.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
+        orderMapper.update(order);
+        //扣除用户余额
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setAmount(order.getTotalAmount());
+        accountDTO.setUserId(order.getUserId());
+        accountService.paymentTAC(accountDTO);
+        //进入扣减库存操作
+        InventoryDTO inventoryDTO = new InventoryDTO();
+        inventoryDTO.setCount(order.getCount());
+        inventoryDTO.setProductId(order.getProductId());
+        inventoryService.decreaseTAC(inventoryDTO);
+    }
+    
     @Override
     public void testMakePayment(Order order) {
-        //orderMapper.update(order);
+        order.setStatus(OrderStatusEnum.PAYING.getCode());
+        orderMapper.update(order);
         //做库存和资金账户的检验工作 这里只是demo 。。。
        /* final AccountDO accountDO = accountService.findByUserId(order.getUserId());
         if (accountDO.getBalance().compareTo(order.getTotalAmount()) <= 0) {
@@ -121,7 +136,7 @@ public class PaymentServiceImpl implements PaymentService {
      * @param order 订单实体
      */
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public void makePaymentWithNested(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
@@ -138,10 +153,40 @@ public class PaymentServiceImpl implements PaymentService {
         accountDTO.setProductId(order.getProductId());
         accountDTO.setCount(order.getCount());
         accountService.paymentWithNested(accountDTO);
+        //进入扣减库存操作
+        InventoryDTO inventoryDTO = new InventoryDTO();
+        inventoryDTO.setCount(order.getCount());
+        inventoryDTO.setProductId(order.getProductId());
+        inventoryService.decrease(inventoryDTO);
     }
-
+    
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    public void makePaymentWithNestedException(Order order) {
+        order.setStatus(OrderStatusEnum.PAYING.getCode());
+        orderMapper.update(order);
+    
+        //做库存和资金账户的检验工作 这里只是demo 。。。
+        final AccountDO accountDO = accountService.findByUserId(order.getUserId());
+        if (accountDO.getBalance().compareTo(order.getTotalAmount()) <= 0) {
+            throw new HmilyRuntimeException("余额不足！");
+        }
+        //扣除用户余额
+        AccountNestedDTO accountDTO = new AccountNestedDTO();
+        accountDTO.setAmount(order.getTotalAmount());
+        accountDTO.setUserId(order.getUserId());
+        accountDTO.setProductId(order.getProductId());
+        accountDTO.setCount(order.getCount());
+        accountService.paymentWithNestedException(accountDTO);
+        //进入扣减库存操作
+        InventoryDTO inventoryDTO = new InventoryDTO();
+        inventoryDTO.setCount(order.getCount());
+        inventoryDTO.setProductId(order.getProductId());
+        inventoryService.decrease(inventoryDTO);
+    }
+    
+    @Override
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public String mockPaymentInventoryWithTryException(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
@@ -161,7 +206,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public String mockPaymentInventoryWithTryTimeout(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
@@ -181,7 +226,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public String mockPaymentInventoryWithConfirmException(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
@@ -201,7 +246,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
+    @HmilyTCC(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public String mockPaymentInventoryWithConfirmTimeout(Order order) {
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);

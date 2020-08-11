@@ -27,7 +27,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ImportResource;
 
 /**
- * SpringCloudTccOrderApplication.
+ * SpringCloudHmilyOrderApplication.
  *
  * @author xiaoyu
  */
@@ -46,5 +46,4 @@ public class SpringCloudHmilyOrderApplication {
     public static void main(final String[] args) {
         SpringApplication.run(SpringCloudHmilyOrderApplication.class, args);
     }
-
 }

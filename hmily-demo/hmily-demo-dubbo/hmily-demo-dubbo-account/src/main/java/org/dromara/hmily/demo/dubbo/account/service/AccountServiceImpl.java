@@ -17,7 +17,9 @@
 
 package org.dromara.hmily.demo.dubbo.account.service;
 
-import org.dromara.hmily.annotation.Hmily;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.dromara.hmily.annotation.HmilyTAC;
+import org.dromara.hmily.annotation.HmilyTCC;
 import org.dromara.hmily.demo.dubbo.account.api.dto.AccountDTO;
 import org.dromara.hmily.demo.dubbo.account.api.dto.AccountNestedDTO;
 import org.dromara.hmily.demo.dubbo.account.api.entity.AccountDO;
@@ -31,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The type Account service.
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Hmily(confirmMethod = "confirm", cancelMethod = "cancel")
+    @HmilyTCC(confirmMethod = "confirm", cancelMethod = "cancel")
     public void payment(AccountDTO accountDTO) {
         accountMapper.update(accountDTO);
         /*final int i = trycount.incrementAndGet();
@@ -90,7 +90,14 @@ public class AccountServiceImpl implements AccountService {
         //内嵌 远端的rpc服务  注意如果是内嵌的调用rpc，那么在这次事务里面，不能再调用该RPC
         // inventoryService.testInLine();
     }
-
+    
+    @Override
+    @HmilyTAC
+    public boolean paymentTAC(AccountDTO accountDTO) {
+        accountMapper.update(accountDTO);
+        return true;
+    }
+    
     @Override
     public boolean testPayment(AccountDTO accountDTO) {
         accountMapper.update(accountDTO);
@@ -98,27 +105,47 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Hmily(confirmMethod = "confirmNested", cancelMethod = "cancelNested")
+    @HmilyTCC(confirmMethod = "confirmNested", cancelMethod = "cancelNested")
     @Transactional(rollbackFor = Exception.class)
     public boolean paymentWithNested(AccountNestedDTO accountNestedDTO) {
         AccountDTO dto = new AccountDTO();
         dto.setAmount(accountNestedDTO.getAmount());
         dto.setUserId(accountNestedDTO.getUserId());
         accountMapper.update(dto);
-
+    
         InventoryDTO inventoryDTO = new InventoryDTO();
-
+    
         inventoryDTO.setCount(accountNestedDTO.getCount());
         inventoryDTO.setProductId(accountNestedDTO.getProductId());
         inventoryService.decrease(inventoryDTO);
         return Boolean.TRUE;
     }
-
+    
+    @Override
+    @HmilyTCC(confirmMethod = "confirmNested", cancelMethod = "cancelNested")
+    @Transactional(rollbackFor = Exception.class)
+    public boolean paymentWithNestedException(AccountNestedDTO accountNestedDTO) {
+        AccountDTO dto = new AccountDTO();
+        dto.setAmount(accountNestedDTO.getAmount());
+        dto.setUserId(accountNestedDTO.getUserId());
+        accountMapper.update(dto);
+        
+        InventoryDTO inventoryDTO = new InventoryDTO();
+        
+        inventoryDTO.setCount(accountNestedDTO.getCount());
+        inventoryDTO.setProductId(accountNestedDTO.getProductId());
+        inventoryService.decrease(inventoryDTO);
+        
+        //下面这个且套服务异常
+        inventoryService.mockWithTryException(inventoryDTO);
+        return Boolean.TRUE;
+    }
+    
     @Override
     public AccountDO findByUserId(String userId) {
         return accountMapper.findByUserId(userId);
     }
-
+    
     /**
      * Confirm nested boolean.
      *

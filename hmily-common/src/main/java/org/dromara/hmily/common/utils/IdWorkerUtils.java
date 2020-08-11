@@ -18,6 +18,7 @@
 package org.dromara.hmily.common.utils;
 
 import java.util.Random;
+import org.dromara.hmily.common.exception.HmilyRuntimeException;
 
 /**
  * snow flow .
@@ -25,43 +26,51 @@ import java.util.Random;
  * @author xiaoyu
  */
 public final class IdWorkerUtils {
-
+    
     private static final Random RANDOM = new Random();
-
-    private static final long WORKER_ID_BITS = 5L;
-
+    
+    private static final IdWorkerUtils INSTANCE = new IdWorkerUtils();
+    
+    private static final long WORKER_ID_BITS = 10L;
+    
     private static final long DATACENTERIDBITS = 5L;
-
+    
     private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
-
+    
     private static final long MAX_DATACENTER_ID = ~(-1L << DATACENTERIDBITS);
-
+    
     private static final long SEQUENCE_BITS = 12L;
-
+    
     private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
-
+    
     private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
-
+    
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTERIDBITS;
-
+    
     private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
-
-    private static final IdWorkerUtils ID_WORKER_UTILS = new IdWorkerUtils();
-
+    
     private long workerId;
-
+    
     private long datacenterId;
-
+    
     private long idepoch;
-
+    
     private long sequence = '0';
-
+    
     private long lastTimestamp = -1L;
-
+    
     private IdWorkerUtils() {
         this(RANDOM.nextInt((int) MAX_WORKER_ID), RANDOM.nextInt((int) MAX_DATACENTER_ID), 1288834974657L);
     }
-
+    
+    public IdWorkerUtils(final long workerId) {
+        if (workerId > MAX_WORKER_ID || workerId < 0) {
+            throw new IllegalArgumentException(
+                    String.format("worker Id can't be greater than %d or less than 0", MAX_WORKER_ID));
+        }
+        this.workerId = workerId;
+    }
+    
     private IdWorkerUtils(final long workerId, final long datacenterId, final long idepoch) {
         if (workerId > MAX_WORKER_ID || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", MAX_WORKER_ID));
@@ -80,13 +89,13 @@ public final class IdWorkerUtils {
      * @return the instance
      */
     public static IdWorkerUtils getInstance() {
-        return ID_WORKER_UTILS;
+        return INSTANCE;
     }
 
     private synchronized long nextId() {
         long timestamp = timeGen();
         if (timestamp < lastTimestamp) {
-            throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+            throw new HmilyRuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
         if (lastTimestamp == timestamp) {
             sequence = (sequence + 1) & SEQUENCE_MASK;
@@ -111,27 +120,17 @@ public final class IdWorkerUtils {
         }
         return timestamp;
     }
-
+    
     private long timeGen() {
         return System.currentTimeMillis();
     }
-
-    /**
-     * Build part number string.
-     *
-     * @return the string
-     */
-    public String buildPartNumber() {
-        return String.valueOf(ID_WORKER_UTILS.nextId());
-    }
-
+    
     /**
      * Create uuid string.
      *
      * @return the string
      */
-    public String createUUID() {
-        return String.valueOf(ID_WORKER_UTILS.nextId());
+    public long createUUID() {
+        return INSTANCE.nextId();
     }
-
 }
